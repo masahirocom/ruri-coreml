@@ -1,0 +1,5 @@
+torch
+transformers>=4.48
+coremltools
+huggingface_hub
+numpy

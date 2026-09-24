@@ -1,0 +1,37 @@
+name: RuriDemo
+options:
+  bundleIdPrefix: com.ruridemo
+packages:
+  SwiftTransformers:
+    url: https://github.com/huggingface/swift-transformers
+    from: 1.3.4
+targets:
+  RuriDemo:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: RuriDemo
+        excludes:
+          - "Resources/tokenizer/**"
+      - path: RuriDemo/Resources/tokenizer
+        type: folder
+        buildPhase: resources
+    dependencies:
+      - package: SwiftTransformers
+        product: Tokenizers
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.ruridemo
+        CODE_SIGN_STYLE: Automatic
+        # Set this to your own Apple Developer Team ID before building for a
+        # physical device (Xcode > Signing & Capabilities, or find it at
+        # https://developer.apple.com/account/#/membership). Left blank here
+        # on purpose — do not commit a real team ID.
+        DEVELOPMENT_TEAM: ""
+        SWIFT_VERSION: "5.0"
+        TARGETED_DEVICE_FAMILY: "1"
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_CFBundleDisplayName: RuriDemo
+        ENABLE_USER_SCRIPT_SANDBOXING: NO

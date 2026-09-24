@@ -1,0 +1,21 @@
+# Build artifacts
+RuriDemo/build*/
+RuriDemo/*.xcodeproj/xcuserdata/
+RuriDemo/*.xcodeproj/project.xcworkspace/xcuserdata/
+
+# Large converted model weights — regenerate with:
+#   python -m ruri_coreml_convert convert cl-nagoya/ruri-v3-130m ruri-v3-130m 128 --precision fp32
+# (528MB fp32 weight.bin exceeds GitHub's 100MB file limit)
+RuriDemo/RuriDemo/Resources/*.mlpackage/Data/com.apple.CoreML/weights/
+
+# Python
+ruri_coreml/venv/
+**/__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
+
+# ad-hoc staging artifacts superseded by ruri_coreml_convert
+ruri_coreml/ios_tokenizer/
+ruri_coreml/repo_*/
