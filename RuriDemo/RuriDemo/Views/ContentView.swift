@@ -25,6 +25,12 @@ struct ContentView: View {
                     ErrorBannerView(messages: viewModel.errorMessages)
 
                     ComparisonTabPicker(selection: $selectedTarget)
+
+                    if selectedTarget == .ruri {
+                        RuriModelPicker(selection: viewModel.selectedRuriConfiguration) { configuration in
+                            Task { await viewModel.selectRuriModel(configuration) }
+                        }
+                    }
                     ActiveModelBadge(modelDescription: viewModel.modelDescription(for: selectedTarget))
 
                     List {

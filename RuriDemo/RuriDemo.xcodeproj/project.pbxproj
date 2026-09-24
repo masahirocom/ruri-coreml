@@ -25,11 +25,13 @@
 		705DEB8E2E8DC0C0188264B5 /* ComputeUnitsPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF5D14F32D5A8087820E1DA3 /* ComputeUnitsPolicy.swift */; };
 		7B554478447C481BE9A026C4 /* SimilarityResultListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B996E32E5765B2E2EFABC36C /* SimilarityResultListView.swift */; };
 		7BEA74F29EAF58949E842422 /* AppleEmbeddingError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7966F4B29321E5556EC76916 /* AppleEmbeddingError.swift */; };
+		7E085546D7EB87A50E759B98 /* RuriModelPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B7C52CDE79D197768296183 /* RuriModelPicker.swift */; };
 		851EC7849BC762CCED106987 /* RuriPromptPrefix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5AB23231256B65E4D1BAE1B9 /* RuriPromptPrefix.swift */; };
 		9C704321E8081A7DD8CF40DE /* MoonNostalgiaDataset.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5AF9F7861FA62B2241AA9C1 /* MoonNostalgiaDataset.swift */; };
 		9F860E806BADB1EAB9E165A6 /* VectorMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F233E0E589EAD8B7411BB33 /* VectorMath.swift */; };
 		A1226570AE3C839BFEDB2731 /* ComparisonTabPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82EEC26FADF54A9E66C30F08 /* ComparisonTabPicker.swift */; };
 		CB0A82C64DF42BCE588F32AB /* LoadedComparisonTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93B4527353CA7B8CE165F26D /* LoadedComparisonTarget.swift */; };
+		D00FAD46F88F56B0BAED0DD1 /* ruri-v3-130m_seq128_fp32_int8.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = E8A6E510E698F2DD8DEE4B07 /* ruri-v3-130m_seq128_fp32_int8.mlpackage */; };
 		D0AA6016FF4BF5FF3BE657A2 /* PrefixedSentenceEmbedder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 136F509F5BAB6484EDAEF063 /* PrefixedSentenceEmbedder.swift */; };
 		D749916484161B532769389B /* LoadingStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B7414962F03B15AF4E49C19 /* LoadingStatusView.swift */; };
 		DC2E73D1FB004DEF6EEFF869 /* ComparisonTargetLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FD959D2F0CE7608F2953892 /* ComparisonTargetLoader.swift */; };
@@ -51,6 +53,7 @@
 		147225CC7323C0D0DA78D89A /* QueryHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryHeaderView.swift; sourceTree = "<group>"; };
 		187E31EA0C819A5084AA6AA6 /* DebugLogging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLogging.swift; sourceTree = "<group>"; };
 		34381C9104B5D99B28342B7D /* RuriEmbeddingError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuriEmbeddingError.swift; sourceTree = "<group>"; };
+		3B7C52CDE79D197768296183 /* RuriModelPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuriModelPicker.swift; sourceTree = "<group>"; };
 		3EBDCC6D54958C31E6D69FDF /* ComparisonTargetID.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComparisonTargetID.swift; sourceTree = "<group>"; };
 		46EE6BC3D8F9DF2B915133BD /* ruri-v3-130m_seq128_fp32.mlpackage */ = {isa = PBXFileReference; path = "ruri-v3-130m_seq128_fp32.mlpackage"; sourceTree = "<group>"; };
 		495F62F43213BDA5347D164D /* ErrorBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorBannerView.swift; sourceTree = "<group>"; };
@@ -82,6 +85,7 @@
 		CD3A3CAE3569E4448D75D3C6 /* SimilarityResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimilarityResult.swift; sourceTree = "<group>"; };
 		D5AF9F7861FA62B2241AA9C1 /* MoonNostalgiaDataset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoonNostalgiaDataset.swift; sourceTree = "<group>"; };
 		E374AAEC081E0E04459D83DE /* RuriTokenEncoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuriTokenEncoding.swift; sourceTree = "<group>"; };
+		E8A6E510E698F2DD8DEE4B07 /* ruri-v3-130m_seq128_fp32_int8.mlpackage */ = {isa = PBXFileReference; path = "ruri-v3-130m_seq128_fp32_int8.mlpackage"; sourceTree = "<group>"; };
 		ED7ABF0BED647392DED61C60 /* RuriModelConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuriModelConfiguration.swift; sourceTree = "<group>"; };
 		F47BBAE4768347B5FCA577A2 /* RuriModelInputBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuriModelInputBuilder.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -144,6 +148,7 @@
 				495F62F43213BDA5347D164D /* ErrorBannerView.swift */,
 				4B7414962F03B15AF4E49C19 /* LoadingStatusView.swift */,
 				147225CC7323C0D0DA78D89A /* QueryHeaderView.swift */,
+				3B7C52CDE79D197768296183 /* RuriModelPicker.swift */,
 				BEF645970BF056CA24AC734F /* SearchActionButton.swift */,
 				B996E32E5765B2E2EFABC36C /* SimilarityResultListView.swift */,
 				9227F350798009C98CC7A293 /* SimilarityResultRow.swift */,
@@ -208,6 +213,7 @@
 		D9FA2112D687CFDEEC298D35 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				E8A6E510E698F2DD8DEE4B07 /* ruri-v3-130m_seq128_fp32_int8.mlpackage */,
 				46EE6BC3D8F9DF2B915133BD /* ruri-v3-130m_seq128_fp32.mlpackage */,
 			);
 			path = Resources;
@@ -338,6 +344,7 @@
 				0E5D91D0A682D0CFF6163108 /* RuriEmbeddingError.swift in Sources */,
 				494FC7D1324AAEF883D32E8B /* RuriModelConfiguration.swift in Sources */,
 				FB48211DC2BB1AD93921DFDD /* RuriModelInputBuilder.swift in Sources */,
+				7E085546D7EB87A50E759B98 /* RuriModelPicker.swift in Sources */,
 				851EC7849BC762CCED106987 /* RuriPromptPrefix.swift in Sources */,
 				FAC9A063C8ECB898CE257A9E /* RuriTokenEncoding.swift in Sources */,
 				229B55A3C416774506CED285 /* SearchActionButton.swift in Sources */,
@@ -348,6 +355,7 @@
 				FFB3B3DF1CE9E4FC77C6C6C8 /* SimilaritySearchService.swift in Sources */,
 				9F860E806BADB1EAB9E165A6 /* VectorMath.swift in Sources */,
 				034B5B51B67C573A26F4700C /* ruri-v3-130m_seq128_fp32.mlpackage in Sources */,
+				D00FAD46F88F56B0BAED0DD1 /* ruri-v3-130m_seq128_fp32_int8.mlpackage in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

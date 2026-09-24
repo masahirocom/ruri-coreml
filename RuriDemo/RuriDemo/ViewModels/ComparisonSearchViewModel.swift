@@ -12,6 +12,7 @@ final class ComparisonSearchViewModel: ObservableObject {
     @Published private(set) var isSearching = false
     @Published private(set) var loadingStatusText = ""
     @Published private(set) var errorMessages: [String] = []
+    @Published private(set) var selectedRuriConfiguration: RuriModelConfiguration = .default
 
     private var loadedTargets: [ComparisonTargetID: LoadedComparisonTarget] = [:]
     private let searchService = SimilaritySearchService()
@@ -31,17 +32,35 @@ final class ComparisonSearchViewModel: ObservableObject {
         errorMessages = []
 
         for id in ComparisonTargetID.allCases {
-            loadingStatusText = id.loadingStatusText
-            do {
-                loadedTargets[id] = try await ComparisonTargetLoader.load(id)
-            } catch {
-                debugLog("[ComparisonSearchViewModel] \(id) failed to load: \(error)")
-                errorMessages.append("\(id.displayName)読み込みエラー: \(error.localizedDescription)")
-            }
+            await loadTarget(id)
         }
 
         loadingStatusText = ""
         isLoadingModels = false
+    }
+
+    /// Reloads just the ruri-v3 tab with a different bundled model variant
+    /// (e.g. chosen from `RuriModelPicker`), leaving the Apple tabs alone.
+    func selectRuriModel(_ configuration: RuriModelConfiguration) async {
+        guard configuration != selectedRuriConfiguration else { return }
+        selectedRuriConfiguration = configuration
+        resultsByTarget[.ruri] = nil
+
+        isLoadingModels = true
+        await loadTarget(.ruri)
+        loadingStatusText = ""
+        isLoadingModels = false
+    }
+
+    private func loadTarget(_ id: ComparisonTargetID) async {
+        loadingStatusText = id.loadingStatusText
+        errorMessages.removeAll { $0.hasPrefix(id.displayName) }
+        do {
+            loadedTargets[id] = try await ComparisonTargetLoader.load(id, ruriConfiguration: selectedRuriConfiguration)
+        } catch {
+            debugLog("[ComparisonSearchViewModel] \(id) failed to load: \(error)")
+            errorMessages.append("\(id.displayName)読み込みエラー: \(error.localizedDescription)")
+        }
     }
 
     func search() async {

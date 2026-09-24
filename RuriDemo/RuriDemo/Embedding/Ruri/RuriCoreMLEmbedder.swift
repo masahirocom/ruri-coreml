@@ -11,7 +11,7 @@ actor RuriCoreMLEmbedder: SentenceEmbedder {
     private let configuration: RuriModelConfiguration
 
     static func load(
-        configuration: RuriModelConfiguration = .ruriV3_130M_Seq128,
+        configuration: RuriModelConfiguration = .default,
         computeUnits: ComputeUnitsPolicy = .default
     ) async throws -> RuriCoreMLEmbedder {
         guard let modelURL = Bundle.main.url(
@@ -21,9 +21,11 @@ actor RuriCoreMLEmbedder: SentenceEmbedder {
             throw RuriEmbeddingError.modelResourceNotFound(configuration.compiledModelResourceName)
         }
 
+        let resolvedComputeUnits = computeUnits.resolved()
         let modelConfiguration = MLModelConfiguration()
-        modelConfiguration.computeUnits = computeUnits.resolved()
+        modelConfiguration.computeUnits = resolvedComputeUnits
         let model = try MLModel(contentsOf: modelURL, configuration: modelConfiguration)
+        debugLog("[RuriCoreMLEmbedder] loaded \(configuration.compiledModelResourceName), computeUnits=\(resolvedComputeUnits.rawValue)")
 
         guard let tokenizerDirectoryURL = Bundle.main.url(
             forResource: configuration.tokenizerResourceDirectoryName,
@@ -71,6 +73,22 @@ actor RuriCoreMLEmbedder: SentenceEmbedder {
 
         // The exported graph already mean-pools and L2-normalizes internally
         // (see the conversion pipeline), so no further math is needed here.
-        return embeddingArray.asFloatVector()
+        let vector = embeddingArray.asFloatVector()
+
+        let nanCount = vector.filter(\.isNaN).count
+        if nanCount > 0 {
+            debugLog(
+                "[RuriCoreMLEmbedder] ⚠️ NaN output from \(configuration.compiledModelResourceName): "
+                    + "dtype=\(embeddingArray.dataType.rawValue) nanCount=\(nanCount)/\(vector.count) "
+                    + "first5=\(vector.prefix(5))"
+            )
+            throw RuriEmbeddingError.nanOutput(
+                modelResourceName: configuration.compiledModelResourceName,
+                nanCount: nanCount,
+                dimensionCount: vector.count
+            )
+        }
+
+        return vector
     }
 }

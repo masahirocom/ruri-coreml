@@ -6,10 +6,13 @@ import NaturalLanguage
 /// comparison target means adding one case here (and to
 /// `ComparisonTargetID`), not touching the view model or search code.
 enum ComparisonTargetLoader {
-    static func load(_ id: ComparisonTargetID) async throws -> LoadedComparisonTarget {
+    static func load(
+        _ id: ComparisonTargetID,
+        ruriConfiguration: RuriModelConfiguration = .default
+    ) async throws -> LoadedComparisonTarget {
         switch id {
         case .ruri:
-            return try await loadRuri(id: id)
+            return try await loadRuri(id: id, configuration: ruriConfiguration)
         case .appleJapanese:
             return try await loadApple(id: id, language: .japanese, query: MoonNostalgiaDataset.queryJapanese)
         case .appleEnglish:
@@ -17,8 +20,7 @@ enum ComparisonTargetLoader {
         }
     }
 
-    private static func loadRuri(id: ComparisonTargetID) async throws -> LoadedComparisonTarget {
-        let configuration = RuriModelConfiguration.ruriV3_130M_Seq128
+    private static func loadRuri(id: ComparisonTargetID, configuration: RuriModelConfiguration) async throws -> LoadedComparisonTarget {
         let model = try await RuriCoreMLEmbedder.load(configuration: configuration)
         return LoadedComparisonTarget(
             id: id,
