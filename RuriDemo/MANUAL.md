@@ -58,7 +58,33 @@ done
 
 RuriDemo では、`RuriModelConfiguration.swift` の `allKnownVariants` に並べたモデルがアプリ内のピッカーで切り替えられます。モデルを追加した場合はここに1行足してください。
 
-## 3. モデルの読み込み
+## 3. 系列長(seq128 / seq256 / seq512)の選び方
+
+各モデルは入力の長さ(トークン数)を固定して書き出しています。Neural Engine は固定長のモデルを最も効率よく実行できるため、長さ違いを3種類用意しています。
+
+| 系列長 | 向いている入力 |
+|---|---|
+| seq128 | 検索クエリ、短い文、タイトル、短いチャンク |
+| seq256 | 短い段落 |
+| seq512 | 長めの段落、文書を分割したチャンク |
+
+**ファイルサイズがほぼ同じ理由:** ファイルの中身のほとんどは重み(学習済みパラメータ)で、重みは系列長に関係なく同じだからです。Transformer は各位置で同じ重みを使い、ruri-v3(ModernBERT)は位置情報を RoPE という計算で与えるため、位置ごとのパラメータ表も持ちません。系列長で変わるのは入力の形の宣言だけです。
+
+**長いほど精度が上がるわけではありません。** 系列長は「一度に読める最大トークン数」です。
+
+- 入力が系列長より短い場合、残りはパディングされ、平均プーリングでは無視されます。そのため短い文なら seq128 でも seq512 でも結果はほぼ同じです。
+- 入力が系列長より長い場合、超えた部分は切り捨てられます。
+- 計算量は系列長に応じて増えます(attention は長さの2乗に比例)。入力が短くても、毎回その系列長ぶん計算します。seq512 は seq128 より推論が遅く、メモリも多く使います。
+
+**選び方の目安**
+
+1. 実際に扱うテキストを `tokenizer.encode(text:)` でトークン化し、トークン数(プレフィックス込み)を確認する。
+2. ほとんどの入力が収まる最小の系列長を選ぶ。
+3. 長い文書は、1チャンクが系列長に収まるように分割してから埋め込む(検索用途ではこの方が精度も上がりやすい)。
+
+RuriDemo のサンプルデータは最長でも90文字程度なので seq128 を使っています。iPhone 17 Pro 実機での seq128 の推論時間は1文あたり約5msでした。
+
+## 4. モデルの読み込み
 
 ```swift
 import CoreML
@@ -72,7 +98,7 @@ let model = try MLModel(contentsOf: modelURL, configuration: modelConfiguration)
 
 初回の推論だけ Neural Engine 向けの準備で時間がかかります(int8版で約2秒)。アプリ起動時に1回ダミー推論をしておくと、ユーザー操作時の待ちをなくせます。
 
-## 4. トークナイザの読み込みと入力の構築
+## 5. トークナイザの読み込みと入力の構築
 
 ```swift
 import Tokenizers
@@ -81,7 +107,7 @@ let tokenizerDir = Bundle.main.url(forResource: "tokenizer", withExtension: nil)
 let tokenizer = try await AutoTokenizer.from(modelFolder: tokenizerDir)
 
 let sequenceLength = 128 // モデルの系列長(ファイル名の seqXXX)に合わせる
-let prefix = "検索文書: " // 1+3プレフィックススキーム。§7参照
+let prefix = "検索文書: " // 1+3プレフィックススキーム。§8参照
 let text = prefix + "瑠璃色は紫みを帯びた濃い青である。"
 
 var tokenIDs = tokenizer.encode(text: text)
@@ -100,7 +126,7 @@ for i in 0..<sequenceLength {
 }
 ```
 
-## 5. 推論と出力の取得
+## 6. 推論と出力の取得
 
 ```swift
 let input = try MLDictionaryFeatureProvider(dictionary: [
@@ -127,7 +153,7 @@ extension MLMultiArray {
 
 出力ベクトルはモデル内で mean pooling + L2 正規化済みなので、追加の後処理は不要です。2つのベクトルの類似度は内積(dot product)で計算できます(コサイン類似度と等価)。
 
-## 6. シミュレータでの実行に関する注意
+## 7. シミュレータでの実行に関する注意
 
 一部の macOS ベータ版では、Core ML のシミュレータ実行バックエンド(MPSGraph)にバグがあり、`computeUnits` の既定設定でモデルのロード・推論が失敗することがあります。シミュレータでのみ CPU 実行に固定すると回避できます。
 
@@ -139,7 +165,7 @@ modelConfiguration.computeUnits = .all
 #endif
 ```
 
-## 7. プレフィックススキーム
+## 8. プレフィックススキーム
 
 ruri-v3 は「1+3プレフィックススキーム」を採用しています。埋め込み対象のテキストの役割に応じて、以下のいずれかを先頭に付与してください。
 
@@ -150,7 +176,7 @@ ruri-v3 は「1+3プレフィックススキーム」を採用しています。
 | `検索クエリ: ` | 検索のクエリ側 |
 | `検索文書: ` | 検索の対象文書側 |
 
-## 8. 参考
+## 9. 参考
 
 - モデル変換パイプライン: [`ruri_coreml/ruri_coreml_convert/`](../ruri_coreml/ruri_coreml_convert/)
 - 実装例(完全版): [`RuriDemo/RuriDemo/Embedding/`](RuriDemo/Embedding/)
