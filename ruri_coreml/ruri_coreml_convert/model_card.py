@@ -30,22 +30,26 @@ pipeline_tag: sentence-similarity
 - ベースモデル: [cl-nagoya/ruri-v3-{model_size_label}](https://huggingface.co/cl-nagoya/ruri-v3-{model_size_label})(ModernBERT-Ja, {parameter_count_description})
 - 出力: **mean pooling + L2 normalize 済みの文埋め込みベクトル**({hidden_dimension}次元)。そのままコサイン類似度の代わりに内積(dot product)で類似度計算できます。
 - 系列長ごとに固定長でモデルを分けています(CoreMLはグラフ内の可変長トレースに難があるため、実用的な長さでバケット化しています)。入力は `input_ids` / `attention_mask` を該当の長さまでパディング/切り詰めしてください。
-- 精度は `fp16`(高精度・軽量)と `int8`(重み量子化・最軽量)の2種類を用意しています。オリジナル(PyTorch)出力とのコサイン類似度は fp16 で 0.99999 以上、int8 でも 0.9998 以上を確認済みです。
+複数の精度を用意していますが、**実機(実際のiPhone)での動作確認状況はファイルごとに異なります**。下の表を必ず確認してから使うモデルを選んでください。
 
-> ⚠️ **実機での既知の問題**: fp16 モデルは、iOS シミュレータでは正しく動作しますが、**実機(実際のiPhone)ではCPU実行時にNaNを返すことがある**ことを確認しています(float16精度でのオーバーフローが疑われます)。実機で使う場合は、自分で `fp32` 精度で再変換することを強く推奨します(このリポジトリの変換スクリプト一式で再現できます)。詳しくは変換スクリプトのリポジトリを参照してください。
+> ⚠️ **重要 — 量子化モデル(int8)は実機でNaNを返すことを確認済みです。** fp16モデル・int8モデル(fp16由来・fp32由来のいずれも)は、iOSシミュレータでは正しく動作しますが、**実機のCore ML実行時に出力が全てNaNになる**ことを確認しています。原因はまだ完全には特定できていません(調査記録は[こちら](https://github.com/masahirocom/ruri-coreml/blob/main/REPORT.md#付録c-実機nan問題の調査記録))。**実機アプリで使う場合は、現時点では `fp32`(無量子化)版のみを使用してください。** fp16/int8版は、シミュレータでの動作確認・Mac上での利用・今後の原因究明用に参考として公開しています。
 
 ## ファイル一覧
 
-| ファイル | 系列長 | 精度 | サイズ目安 |
-|---|---|---|---|
-| `ruri-v3-{model_size_label}_seq128_fp16.mlpackage` | 128 | fp16 | {fp16_file_size_mb}MB |
-| `ruri-v3-{model_size_label}_seq256_fp16.mlpackage` | 256 | fp16 | {fp16_file_size_mb}MB |
-| `ruri-v3-{model_size_label}_seq512_fp16.mlpackage` | 512 | fp16 | {fp16_file_size_mb}MB |
-| `ruri-v3-{model_size_label}_seq128_int8.mlpackage` | 128 | int8(量子化) | {int8_file_size_mb}MB |
-| `ruri-v3-{model_size_label}_seq256_int8.mlpackage` | 256 | int8(量子化) | {int8_file_size_mb}MB |
-| `ruri-v3-{model_size_label}_seq512_int8.mlpackage` | 512 | int8(量子化) | {int8_file_size_mb}MB |
+| ファイル | 系列長 | 精度 | サイズ目安 | 実機動作 |
+|---|---|---|---|---|
+| `ruri-v3-{model_size_label}_seq128_fp32.mlpackage` | 128 | fp32(無量子化) | {fp32_file_size_mb}MB | ✅ 確認済み |
+| `ruri-v3-{model_size_label}_seq128_fp16.mlpackage` | 128 | fp16 | {fp16_file_size_mb}MB | ❌ NaN(既知の問題) |
+| `ruri-v3-{model_size_label}_seq256_fp16.mlpackage` | 256 | fp16 | {fp16_file_size_mb}MB | ❌ NaN(既知の問題) |
+| `ruri-v3-{model_size_label}_seq512_fp16.mlpackage` | 512 | fp16 | {fp16_file_size_mb}MB | ❌ NaN(既知の問題) |
+| `ruri-v3-{model_size_label}_seq128_int8.mlpackage` | 128 | int8(fp16由来) | {int8_file_size_mb}MB | ❌ NaN(既知の問題) |
+| `ruri-v3-{model_size_label}_seq256_int8.mlpackage` | 256 | int8(fp16由来) | {int8_file_size_mb}MB | ❌ NaN(既知の問題) |
+| `ruri-v3-{model_size_label}_seq512_int8.mlpackage` | 512 | int8(fp16由来) | {int8_file_size_mb}MB | ❌ NaN(既知の問題) |
+| `ruri-v3-{model_size_label}_seq128_fp32_int8.mlpackage` | 128 | int8(fp32由来・重みのみ量子化) | {fp32_int8_file_size_mb}MB | ❌ NaN(既知の問題) |
 
-短いクエリやチャンクで検索するなら seq128、長めの文書チャンクなら seq256/512 を選んでください。
+オリジナル(PyTorch)出力とのコサイン類似度は、いずれのファイルも0.9998以上(fp32は1.0)を確認済みです — **数値精度自体は全ファイルで問題ありません。実機でのCore ML実行パスにのみ問題があります。**
+
+短いクエリやチャンクで検索するなら seq128、長めの文書チャンクなら seq256/512 を選んでください(fp32は現状seq128のみ提供)。
 
 ## プレフィックスについて(重要)
 
@@ -58,12 +62,14 @@ ruri-v3 は "1+3 prefix scheme" を採用しているため、埋め込み対象
 
 ## Swift (Core ML) での使用例
 
+実機で動かす場合は必ず `fp32` 版を使ってください(上記の既知の問題を参照)。完全な実装例・落とし穴の解説は[MANUAL.md](https://github.com/masahirocom/ruri-coreml/blob/main/RuriDemo/MANUAL.md)を参照してください。
+
 ```swift
 import CoreML
 
 let configuration = MLModelConfiguration()
 let model = try MLModel(
-    contentsOf: Bundle.main.url(forResource: "ruri-v3-{model_size_label}_seq128_fp16", withExtension: "mlmodelc")!,
+    contentsOf: Bundle.main.url(forResource: "ruri-v3-{model_size_label}_seq128_fp32", withExtension: "mlmodelc")!,
     configuration: configuration
 )
 
@@ -91,7 +97,7 @@ import numpy as np
 from transformers import AutoTokenizer
 
 tokenizer = AutoTokenizer.from_pretrained("cl-nagoya/ruri-v3-{model_size_label}")
-model = ct.models.MLModel("ruri-v3-{model_size_label}_seq128_fp16.mlpackage")
+model = ct.models.MLModel("ruri-v3-{model_size_label}_seq128_fp32.mlpackage")
 
 text = "検索文書: 瑠璃色（るりいろ）は、紫みを帯びた濃い青のことである。"
 encoded = tokenizer([text], return_tensors="np", padding="max_length", truncation=True, max_length=128)
@@ -104,7 +110,7 @@ print(output["sentence_embedding"].shape)  # (1, {hidden_dimension})
 
 ## 変換方法(再現手順)
 
-このリポジトリのモデルは [ruri_coreml_convert](https://github.com/) 変換ツールで生成されています。手順の概要:
+このリポジトリのモデルは [ruri_coreml_convert](https://github.com/masahirocom/ruri-coreml/tree/main/ruri_coreml/ruri_coreml_convert) 変換ツールで生成されています。手順の概要:
 
 1. `transformers` の `AutoModel` で ModernBERT ベースの ruri-v3 をロード
 2. mean pooling + L2 normalize を行う `nn.Module` でラップ
@@ -136,8 +142,10 @@ class ModelCardContext:
     model_size_label: str  # e.g. "130m"
     parameter_count_description: str  # e.g. "132M params, hidden=512"
     hidden_dimension: int
+    fp32_file_size_mb: int
     fp16_file_size_mb: int
     int8_file_size_mb: int
+    fp32_int8_file_size_mb: int
 
 
 def render_model_card(context: ModelCardContext) -> str:

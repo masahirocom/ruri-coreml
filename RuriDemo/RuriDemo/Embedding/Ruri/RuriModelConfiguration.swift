@@ -21,6 +21,11 @@ struct RuriModelConfiguration {
     /// Name of the model's output feature, as declared during CoreML export.
     let outputFeatureName: String
 
+    /// The only variant confirmed to run correctly on a real device so far.
+    /// fp16 (plain and int8-quantized-from-fp16) and int8-quantized-from-fp32
+    /// have all been observed to return NaN embeddings on real iPhones — see
+    /// REPORT.md. Weight quantization itself, not compute precision, appears
+    /// to be the trigger; this is unconfirmed and worth further isolation.
     static let ruriV3_130M_Seq128 = RuriModelConfiguration(
         compiledModelResourceName: "ruri-v3-130m_seq128_fp32",
         sequenceLength: 128,

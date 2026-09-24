@@ -25,6 +25,7 @@ struct ContentView: View {
                     ErrorBannerView(messages: viewModel.errorMessages)
 
                     ComparisonTabPicker(selection: $selectedTarget)
+                    ActiveModelBadge(modelDescription: viewModel.modelDescription(for: selectedTarget))
 
                     List {
                         SimilarityResultListView(

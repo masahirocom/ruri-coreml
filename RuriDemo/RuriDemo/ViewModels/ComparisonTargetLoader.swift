@@ -18,13 +18,15 @@ enum ComparisonTargetLoader {
     }
 
     private static func loadRuri(id: ComparisonTargetID) async throws -> LoadedComparisonTarget {
-        let model = try await RuriCoreMLEmbedder.load()
+        let configuration = RuriModelConfiguration.ruriV3_130M_Seq128
+        let model = try await RuriCoreMLEmbedder.load(configuration: configuration)
         return LoadedComparisonTarget(
             id: id,
             query: MoonNostalgiaDataset.queryJapanese,
             documents: MoonNostalgiaDataset.documents,
             queryEmbedder: PrefixedSentenceEmbedder(wrapping: model, prefix: .searchQuery),
-            documentEmbedder: PrefixedSentenceEmbedder(wrapping: model, prefix: .searchDocument)
+            documentEmbedder: PrefixedSentenceEmbedder(wrapping: model, prefix: .searchDocument),
+            modelDescription: configuration.compiledModelResourceName
         )
     }
 
@@ -39,7 +41,8 @@ enum ComparisonTargetLoader {
             query: query,
             documents: MoonNostalgiaDataset.documents(in: language),
             queryEmbedder: model,
-            documentEmbedder: model
+            documentEmbedder: model,
+            modelDescription: "NLContextualEmbedding (\(language.rawValue))"
         )
     }
 }

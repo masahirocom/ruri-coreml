@@ -108,8 +108,10 @@ def _add_model_card_subcommand(subparsers: argparse._SubParsersAction) -> None:
     parser.add_argument("model_size_label", help="e.g. 130m")
     parser.add_argument("parameter_count_description", help="e.g. '132M params, hidden=512'")
     parser.add_argument("hidden_dimension", type=int)
+    parser.add_argument("fp32_file_size_mb", type=int)
     parser.add_argument("fp16_file_size_mb", type=int)
     parser.add_argument("int8_file_size_mb", type=int)
+    parser.add_argument("fp32_int8_file_size_mb", type=int)
     parser.add_argument("output_path", type=Path)
     parser.set_defaults(handler=_run_model_card)
 
@@ -120,8 +122,10 @@ def _run_model_card(args: argparse.Namespace) -> None:
             model_size_label=args.model_size_label,
             parameter_count_description=args.parameter_count_description,
             hidden_dimension=args.hidden_dimension,
+            fp32_file_size_mb=args.fp32_file_size_mb,
             fp16_file_size_mb=args.fp16_file_size_mb,
             int8_file_size_mb=args.int8_file_size_mb,
+            fp32_int8_file_size_mb=args.fp32_int8_file_size_mb,
         ),
         args.output_path,
     )

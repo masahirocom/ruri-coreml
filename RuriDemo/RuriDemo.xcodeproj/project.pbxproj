@@ -36,6 +36,7 @@
 		DCE0BAAD4884B542B339DDC1 /* SimilarityResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD3A3CAE3569E4448D75D3C6 /* SimilarityResult.swift */; };
 		E29D3A1F0E6CFCEECBCF7B51 /* tokenizer in Resources */ = {isa = PBXBuildFile; fileRef = A16E5AFE811ABAEC4FA65739 /* tokenizer */; };
 		E390E9018B5B7B315F8EAE77 /* ModelAssetLoadRetryPolicy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 937C0B3B6693BF91ADE60821 /* ModelAssetLoadRetryPolicy.swift */; };
+		E43DB162B4BF80F0F4AA7E7D /* ActiveModelBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01AEF495AB38BECC0EDF230 /* ActiveModelBadge.swift */; };
 		F347C56640E3B50FD0B2C484 /* SimilarityResultRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9227F350798009C98CC7A293 /* SimilarityResultRow.swift */; };
 		F54DFE628B626B3120748371 /* RuriDemoApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AED9F80CFA09940DAF186CE4 /* RuriDemoApp.swift */; };
 		F93BDB7F766225BFCD0FEED9 /* DebugLogging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 187E31EA0C819A5084AA6AA6 /* DebugLogging.swift */; };
@@ -69,6 +70,7 @@
 		937C0B3B6693BF91ADE60821 /* ModelAssetLoadRetryPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelAssetLoadRetryPolicy.swift; sourceTree = "<group>"; };
 		93B4527353CA7B8CE165F26D /* LoadedComparisonTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadedComparisonTarget.swift; sourceTree = "<group>"; };
 		9AE673737A9E865A16A495BA /* AppleContextualEmbedder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleContextualEmbedder.swift; sourceTree = "<group>"; };
+		A01AEF495AB38BECC0EDF230 /* ActiveModelBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActiveModelBadge.swift; sourceTree = "<group>"; };
 		A16E5AFE811ABAEC4FA65739 /* tokenizer */ = {isa = PBXFileReference; lastKnownFileType = folder; name = tokenizer; path = RuriDemo/Resources/tokenizer; sourceTree = SOURCE_ROOT; };
 		AED9F80CFA09940DAF186CE4 /* RuriDemoApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuriDemoApp.swift; sourceTree = "<group>"; };
 		AF5D14F32D5A8087820E1DA3 /* ComputeUnitsPolicy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComputeUnitsPolicy.swift; sourceTree = "<group>"; };
@@ -136,6 +138,7 @@
 		2D2B2AC38E1464E2E9579586 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				A01AEF495AB38BECC0EDF230 /* ActiveModelBadge.swift */,
 				82EEC26FADF54A9E66C30F08 /* ComparisonTabPicker.swift */,
 				649369D918BD19FF21D4AE77 /* ContentView.swift */,
 				495F62F43213BDA5347D164D /* ErrorBannerView.swift */,
@@ -310,6 +313,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E43DB162B4BF80F0F4AA7E7D /* ActiveModelBadge.swift in Sources */,
 				1E42BC0AF67AF4CE9CBC03BD /* AppleContextualEmbedder.swift in Sources */,
 				7BEA74F29EAF58949E842422 /* AppleEmbeddingError.swift in Sources */,
 				67D5FEF090E056547290ADD6 /* ComparisonSearchViewModel.swift in Sources */,

@@ -20,6 +20,12 @@ final class ComparisonSearchViewModel: ObservableObject {
         resultsByTarget[target] ?? []
     }
 
+    /// What's actually loaded for this tab (e.g. "ruri-v3-130m_seq128_fp32"),
+    /// so it's never ambiguous which model produced the results on screen.
+    func modelDescription(for target: ComparisonTargetID) -> String? {
+        loadedTargets[target]?.modelDescription
+    }
+
     func loadModels() async {
         isLoadingModels = true
         errorMessages = []
