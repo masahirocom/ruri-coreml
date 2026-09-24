@@ -14,11 +14,7 @@ struct RuriModelPicker: View {
                 Button {
                     onSelect(configuration)
                 } label: {
-                    if configuration.isKnownToFailOnRealDevice {
-                        Label(configuration.displayName, systemImage: "exclamationmark.triangle")
-                    } else {
-                        Text(configuration.displayName)
-                    }
+                    Text(configuration.displayName)
                 }
             }
         } label: {

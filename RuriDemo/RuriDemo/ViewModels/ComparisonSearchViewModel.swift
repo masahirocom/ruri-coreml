@@ -21,7 +21,7 @@ final class ComparisonSearchViewModel: ObservableObject {
         resultsByTarget[target] ?? []
     }
 
-    /// What's actually loaded for this tab (e.g. "ruri-v3-130m_seq128_fp32"),
+    /// What's actually loaded for this tab (e.g. "ruri-v3-130m_seq128_int8"),
     /// so it's never ambiguous which model produced the results on screen.
     func modelDescription(for target: ComparisonTargetID) -> String? {
         loadedTargets[target]?.modelDescription
@@ -70,12 +70,14 @@ final class ComparisonSearchViewModel: ObservableObject {
         for id in ComparisonTargetID.allCases {
             guard let target = loadedTargets[id] else { continue }
             do {
-                resultsByTarget[id] = try await searchService.rank(
+                let results = try await searchService.rank(
                     query: target.query,
                     against: target.documents,
                     queryEmbedder: target.queryEmbedder,
                     documentEmbedder: target.documentEmbedder
                 )
+                resultsByTarget[id] = results
+                logResults(results, for: target)
             } catch {
                 debugLog("[ComparisonSearchViewModel] \(id) search failed: \(error)")
                 errorMessages.append("\(id.displayName)推論エラー: \(error.localizedDescription)")
@@ -83,5 +85,13 @@ final class ComparisonSearchViewModel: ObservableObject {
         }
 
         isSearching = false
+    }
+
+    private func logResults(_ results: [SimilarityResult], for target: LoadedComparisonTarget) {
+        debugLog("[Results] \(target.modelDescription) query=\(target.query)")
+        for (index, result) in results.enumerated() {
+            let rank = index + 1
+            debugLog("[Results] \(rank)\t\(String(format: "%.4f", result.score))\t\(result.document.label)")
+        }
     }
 }

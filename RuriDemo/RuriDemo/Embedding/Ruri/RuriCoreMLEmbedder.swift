@@ -11,8 +11,7 @@ actor RuriCoreMLEmbedder: SentenceEmbedder {
     private let configuration: RuriModelConfiguration
 
     static func load(
-        configuration: RuriModelConfiguration = .default,
-        computeUnits: ComputeUnitsPolicy = .default
+        configuration: RuriModelConfiguration = .default
     ) async throws -> RuriCoreMLEmbedder {
         guard let modelURL = Bundle.main.url(
             forResource: configuration.compiledModelResourceName,
@@ -21,7 +20,7 @@ actor RuriCoreMLEmbedder: SentenceEmbedder {
             throw RuriEmbeddingError.modelResourceNotFound(configuration.compiledModelResourceName)
         }
 
-        let resolvedComputeUnits = computeUnits.resolved()
+        let resolvedComputeUnits = ComputeUnitsPolicy.default.resolved()
         let modelConfiguration = MLModelConfiguration()
         modelConfiguration.computeUnits = resolvedComputeUnits
         let model = try MLModel(contentsOf: modelURL, configuration: modelConfiguration)
@@ -78,7 +77,7 @@ actor RuriCoreMLEmbedder: SentenceEmbedder {
         let nanCount = vector.filter(\.isNaN).count
         if nanCount > 0 {
             debugLog(
-                "[RuriCoreMLEmbedder] ⚠️ NaN output from \(configuration.compiledModelResourceName): "
+                "[RuriCoreMLEmbedder] NaN output from \(configuration.compiledModelResourceName): "
                     + "dtype=\(embeddingArray.dataType.rawValue) nanCount=\(nanCount)/\(vector.count) "
                     + "first5=\(vector.prefix(5))"
             )

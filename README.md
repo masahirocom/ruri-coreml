@@ -19,18 +19,18 @@ Pre-converted `.mlpackage` files are published on Hugging Face — no need to ru
 - [masahiroid/ruri-v3-130m-coreml](https://huggingface.co/masahiroid/ruri-v3-130m-coreml)
 - [masahiroid/ruri-v3-310m-coreml](https://huggingface.co/masahiroid/ruri-v3-310m-coreml)
 
-**For real-device use, prefer the `fp32` variant.** fp16 models have been observed to return NaN embeddings on real iPhones (not the Simulator) — see `ruri_coreml/ruri_coreml_convert/conversion.py`'s module docstring and `REPORT.md` for details.
+Each size is published as **fp16** and as **int8** (weight-quantized from fp16), at sequence lengths 128/256/512. On an iPhone 17 Pro (iOS 27) both run on the GPU/Neural Engine at about 5 ms per sentence; int8 is half the size with near-identical scores, so it's the recommended choice for mobile apps.
 
 ## Running the iOS app
 
 ```bash
 cd RuriDemo
-./scripts/download_model.sh   # fetches the fp32 model from Hugging Face into RuriDemo/Resources
+./scripts/download_model.sh   # fetches the 130m fp16 + int8 models from Hugging Face into RuriDemo/RuriDemo/Resources
 xcodegen generate
 open RuriDemo.xcodeproj
 ```
 
-Build and run on a real device (the Simulator's CoreML backend has known issues with this model on some OS versions — see `REPORT.md`).
+Set your own signing team in Xcode, add the downloaded `.mlpackage` files to the target if needed, and run on a real device. See [`RuriDemo/MANUAL.md`](RuriDemo/MANUAL.md) for details.
 
 ## Converting a model yourself
 

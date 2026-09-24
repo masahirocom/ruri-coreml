@@ -15,10 +15,7 @@ enum RuriEmbeddingError: Error, LocalizedError {
         case let .missingOutputFeature(name):
             "The CoreML model did not return an output named '\(name)'."
         case let .nanOutput(modelResourceName, nanCount, dimensionCount):
-            "\(modelResourceName) returned \(nanCount)/\(dimensionCount) NaN values. " +
-            "This is a known issue with float16-compute and int8-quantized ruri-v3 " +
-            "Core ML exports on real devices — see REPORT.md. Use the fp32 (unquantized) " +
-            "model on-device."
+            "\(modelResourceName) returned \(nanCount)/\(dimensionCount) NaN values."
         }
     }
 }

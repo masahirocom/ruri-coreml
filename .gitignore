@@ -3,10 +3,9 @@ RuriDemo/build*/
 RuriDemo/*.xcodeproj/xcuserdata/
 RuriDemo/*.xcodeproj/project.xcworkspace/xcuserdata/
 
-# Large converted model weights — regenerate with:
-#   python -m ruri_coreml_convert convert cl-nagoya/ruri-v3-130m ruri-v3-130m 128 --precision fp32
-# (528MB fp32 weight.bin exceeds GitHub's 100MB file limit)
-RuriDemo/RuriDemo/Resources/*.mlpackage/Data/com.apple.CoreML/weights/
+# Large converted model weights (exceed GitHub's 100MB file limit) — fetch
+# them with RuriDemo/scripts/download_model.sh
+RuriDemo/RuriDemo/Resources/*.mlpackage/
 
 # Python
 ruri_coreml/venv/

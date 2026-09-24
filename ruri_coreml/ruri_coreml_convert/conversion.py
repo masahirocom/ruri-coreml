@@ -1,14 +1,4 @@
-"""PyTorch -> Core ML conversion for a ruri-v3 checkpoint.
-
-Real-device note: converting with ``ComputePrecision.FLOAT16`` produces a
-smaller model, but running that model on a real iPhone's CPU has been
-observed to return NaN embeddings — almost certainly float16 overflow
-somewhere in the graph (RoPE's high frequencies and LayerNorm are the usual
-suspects) that the iOS Simulator's CPU backend doesn't reproduce, because it
-appears to compute in float32 regardless of the declared storage precision.
-FLOAT32 does not show this. Prefer FLOAT32 for anything that will run on a
-real device until the specific op is root-caused.
-"""
+"""PyTorch -> Core ML conversion for a ruri-v3 checkpoint."""
 
 from __future__ import annotations
 

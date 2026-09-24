@@ -6,9 +6,8 @@ from enum import Enum
 class ComputePrecision(str, Enum):
     """The two Core ML compute precisions this pipeline supports.
 
-    fp32 costs roughly double the file size of fp16 but avoids a class of
-    real-device numerical failures fp16 can hit (see conversion.py's module
-    docstring for the concrete bug this was written to sidestep).
+    fp16 is the published format: half the size of fp32 and runs on the GPU
+    and Neural Engine. fp32 is kept for debugging numerical differences.
     """
 
     FLOAT16 = "fp16"

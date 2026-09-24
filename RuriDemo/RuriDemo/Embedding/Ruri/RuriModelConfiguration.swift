@@ -26,43 +26,34 @@ struct RuriModelConfiguration: Identifiable, Hashable {
     /// Name of the model's output feature, as declared during CoreML export.
     let outputFeatureName: String
 
-    /// Whether this variant is known, from prior on-device testing, to
-    /// return NaN embeddings on a real iPhone (see REPORT.md appendix C).
-    /// Purely informational — the picker uses it to warn, nothing more.
-    let isKnownToFailOnRealDevice: Bool
-
-    /// The only variant confirmed to run correctly on a real device so far.
-    static let ruriV3_130M_Seq128_fp32 = RuriModelConfiguration(
-        compiledModelResourceName: "ruri-v3-130m_seq128_fp32",
-        displayName: "ruri-v3-130m (fp32)",
+    /// Requires `ruri-v3-130m_seq128_fp16.mlpackage` in Resources
+    /// (fetch it with `scripts/download_model.sh`).
+    static let ruriV3_130M_Seq128_fp16 = RuriModelConfiguration(
+        compiledModelResourceName: "ruri-v3-130m_seq128_fp16",
+        displayName: "ruri-v3-130m",
         sequenceLength: 128,
         tokenizerResourceDirectoryName: "tokenizer",
-        outputFeatureName: "sentence_embedding",
-        isKnownToFailOnRealDevice: false
+        outputFeatureName: "sentence_embedding"
     )
 
-    /// Weights quantized to int8 from the fp32 graph. Included for
-    /// reproducing the NaN-on-device issue tracked in REPORT.md's appendix
-    /// C — not because it's usable yet. Requires the
-    /// `ruri-v3-130m_seq128_fp32_int8.mlpackage` resource to be present
-    /// (generate it with `ruri_coreml_convert quantize`).
-    static let ruriV3_130M_Seq128_fp32Int8 = RuriModelConfiguration(
-        compiledModelResourceName: "ruri-v3-130m_seq128_fp32_int8",
-        displayName: "ruri-v3-130m (fp32→int8, 実機NaN既知)",
+    /// Requires `ruri-v3-130m_seq128_int8.mlpackage` in Resources
+    /// (fetch it with `scripts/download_model.sh`).
+    static let ruriV3_130M_Seq128_int8 = RuriModelConfiguration(
+        compiledModelResourceName: "ruri-v3-130m_seq128_int8",
+        displayName: "ruri-v3-130m 量子化(int8)",
         sequenceLength: 128,
         tokenizerResourceDirectoryName: "tokenizer",
-        outputFeatureName: "sentence_embedding",
-        isKnownToFailOnRealDevice: true
+        outputFeatureName: "sentence_embedding"
     )
 
     /// Used when nothing else has been selected.
-    static let `default` = ruriV3_130M_Seq128_fp32
+    static let `default` = ruriV3_130M_Seq128_int8
 
     /// Every variant this app knows how to load. Powers the in-app model
     /// picker — add a bundled `.mlpackage` here (and to Xcode's Resources)
     /// to make it selectable without touching any other file.
     static let allKnownVariants: [RuriModelConfiguration] = [
-        .ruriV3_130M_Seq128_fp32,
-        .ruriV3_130M_Seq128_fp32Int8,
+        .ruriV3_130M_Seq128_int8,
+        .ruriV3_130M_Seq128_fp16,
     ]
 }

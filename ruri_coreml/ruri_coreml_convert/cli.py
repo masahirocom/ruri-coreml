@@ -46,9 +46,9 @@ def _add_convert_subcommand(subparsers: argparse._SubParsersAction) -> None:
         "--precision",
         type=ComputePrecision,
         choices=list(ComputePrecision),
-        default=ComputePrecision.FLOAT32,
+        default=ComputePrecision.FLOAT16,
         metavar="{fp16,fp32}",
-        help="Compute precision. fp32 is recommended for real-device use (see conversion.py).",
+        help="Compute precision (default: fp16, the published format).",
     )
     parser.add_argument("--output-dir", type=Path, default=_DEFAULT_OUTPUT_DIRECTORY)
     parser.set_defaults(handler=_run_convert)
@@ -108,10 +108,8 @@ def _add_model_card_subcommand(subparsers: argparse._SubParsersAction) -> None:
     parser.add_argument("model_size_label", help="e.g. 130m")
     parser.add_argument("parameter_count_description", help="e.g. '132M params, hidden=512'")
     parser.add_argument("hidden_dimension", type=int)
-    parser.add_argument("fp32_file_size_mb", type=int)
     parser.add_argument("fp16_file_size_mb", type=int)
     parser.add_argument("int8_file_size_mb", type=int)
-    parser.add_argument("fp32_int8_file_size_mb", type=int)
     parser.add_argument("output_path", type=Path)
     parser.set_defaults(handler=_run_model_card)
 
@@ -122,10 +120,8 @@ def _run_model_card(args: argparse.Namespace) -> None:
             model_size_label=args.model_size_label,
             parameter_count_description=args.parameter_count_description,
             hidden_dimension=args.hidden_dimension,
-            fp32_file_size_mb=args.fp32_file_size_mb,
             fp16_file_size_mb=args.fp16_file_size_mb,
             int8_file_size_mb=args.int8_file_size_mb,
-            fp32_int8_file_size_mb=args.fp32_int8_file_size_mb,
         ),
         args.output_path,
     )

@@ -19,18 +19,18 @@
 - [masahiroid/ruri-v3-130m-coreml](https://huggingface.co/masahiroid/ruri-v3-130m-coreml)
 - [masahiroid/ruri-v3-310m-coreml](https://huggingface.co/masahiroid/ruri-v3-310m-coreml)
 
-**実機で使う場合は `fp32` 版を推奨します。** fp16モデルは(シミュレータではなく)実機のiPhoneでNaNを返すことが確認されています。詳細は `ruri_coreml/ruri_coreml_convert/conversion.py` のモジュールdocstringと `REPORT.md` を参照してください。
+各サイズとも **fp16版** と、そこから重みを量子化した **int8版** を系列長128/256/512で公開しています。iPhone 17 Pro実機(iOS 27)ではどちらもGPU/Neural Engine上で1文あたり約5msで動作します。int8版はサイズが半分でスコアもほぼ同じなので、モバイルアプリにはint8版を推奨します。
 
 ## iOSアプリの実行方法
 
 ```bash
 cd RuriDemo
-./scripts/download_model.sh   # Hugging Faceからfp32モデルをRuriDemo/Resourcesに取得
+./scripts/download_model.sh   # Hugging Faceから130mのfp16版・int8版をRuriDemo/RuriDemo/Resourcesに取得
 xcodegen generate
 open RuriDemo.xcodeproj
 ```
 
-実機でビルド・実行してください(シミュレータのCore MLバックエンドには一部OSバージョンで既知の問題があります。詳細は`REPORT.md`参照)。
+Xcodeで自分の署名チームを設定し、必要に応じてダウンロードした `.mlpackage` をターゲットに追加して、実機で実行してください。詳細は [`RuriDemo/MANUAL.md`](RuriDemo/MANUAL.md) を参照してください。
 
 ## 自分でモデルを変換する場合
 
@@ -38,7 +38,7 @@ open RuriDemo.xcodeproj
 
 ## Swift/iOS実装マニュアル
 
-モデルの読み込み・トークナイズ・推論・既知の落とし穴(実機NaN問題など)は [`RuriDemo/MANUAL.md`](RuriDemo/MANUAL.md) にまとめています。
+モデルのダウンロードと配置・読み込み・トークナイズ・推論は [`RuriDemo/MANUAL.md`](RuriDemo/MANUAL.md) にまとめています。
 
 ## ライセンス
 
